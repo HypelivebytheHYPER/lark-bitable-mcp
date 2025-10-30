@@ -81,8 +81,8 @@
     }
   },
   "documentation": {
-    "setup": "https://github.com/modcho/lark-bitable-mcp/blob/main/README.md",
-    "n8nGuide": "https://github.com/modcho/lark-bitable-mcp/blob/main/N8N_CLOUD_SETUP.md",
+    "setup": "https://github.com/HypelivebytheHYPER/lark-bitable-mcp/blob/main/README.md",
+    "n8nGuide": "https://github.com/HypelivebytheHYPER/lark-bitable-mcp/blob/main/N8N_CLOUD_SETUP.md",
     "api": "https://lark-bitable-mcp.hypelive.workers.dev/health"
   },
   "architecture": {
