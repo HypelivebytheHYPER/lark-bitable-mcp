@@ -5,7 +5,7 @@
   "description": "MCP server for Lark Bitable with 15 essential database operations. Manage apps, tables, and records.",
   "version": "1.0.0",
   "repository": {
-    "type": "git",
+    "source": "github",
     "url": "https://github.com/HypelivebytheHYPER/lark-bitable-mcp"
   },
   "homepage": "https://lark-bitable-mcp.hypelive.workers.dev",
