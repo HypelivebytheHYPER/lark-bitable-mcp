@@ -1,0 +1,151 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-10-17/server.schema.json",
+  "name": "io.github.HypelivebytheHYPER/lark-bitable-mcp",
+  "title": "Lark Bitable MCP Server",
+  "description": "MCP server for Lark Bitable with 15 essential database operations. Manage apps, tables, and records.",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HypelivebytheHYPER/lark-bitable-mcp"
+  },
+  "homepage": "https://lark-bitable-mcp.hypelive.workers.dev",
+  "keywords": [
+    "lark",
+    "feishu",
+    "bitable",
+    "database",
+    "base",
+    "spreadsheet",
+    "airtable-alternative",
+    "automation",
+    "n8n",
+    "workflow"
+  ],
+  "categories": [
+    "databases",
+    "productivity",
+    "automation"
+  ],
+  "license": "MIT",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://lark-bitable-mcp.hypelive.workers.dev/mcp",
+      "headers": [
+        {
+          "name": "Authorization",
+          "description": "Bearer token for authentication (MCP_AUTH_SECRET). Contact server administrator for access.",
+          "isRequired": true,
+          "isSecret": true
+        }
+      ]
+    }
+  ],
+  "capabilities": {
+    "tools": {
+      "count": 15,
+      "categories": [
+        {
+          "name": "App Management",
+          "count": 3,
+          "tools": ["bitable_create_app", "bitable_get_app", "bitable_list_apps"]
+        },
+        {
+          "name": "Table Operations",
+          "count": 4,
+          "tools": ["bitable_create_table", "bitable_list_tables", "bitable_get_table", "bitable_delete_table"]
+        },
+        {
+          "name": "Field Management",
+          "count": 3,
+          "tools": ["bitable_list_fields", "bitable_create_field", "bitable_update_field"]
+        },
+        {
+          "name": "Record Operations",
+          "count": 5,
+          "tools": ["bitable_create_record", "bitable_batch_create_records", "bitable_search_records", "bitable_update_record", "bitable_batch_update_records"]
+        }
+      ]
+    }
+  },
+  "integrations": {
+    "n8n": {
+      "supported": true,
+      "version": "1.2+",
+      "nodeType": "MCP Client Tool",
+      "guide": "https://lark-bitable-mcp.hypelive.workers.dev/docs/n8n-cloud-setup"
+    },
+    "claude-code": {
+      "supported": true,
+      "transport": "streamable-http"
+    }
+  },
+  "documentation": {
+    "setup": "https://github.com/modcho/lark-bitable-mcp/blob/main/README.md",
+    "n8nGuide": "https://github.com/modcho/lark-bitable-mcp/blob/main/N8N_CLOUD_SETUP.md",
+    "api": "https://lark-bitable-mcp.hypelive.workers.dev/health"
+  },
+  "architecture": {
+    "gateway": "https://larksuite-hype-server.hypelive.workers.dev",
+    "deployment": "cloudflare-workers",
+    "transport": "streamable-http (JSON-RPC 2.0)",
+    "authentication": "bearer-token",
+    "fieldTypes": {
+      "1": "Text (multi-line)",
+      "2": "Number",
+      "3": "Single Select",
+      "4": "Multi Select",
+      "5": "DateTime",
+      "7": "Checkbox",
+      "11": "User",
+      "13": "Phone",
+      "15": "URL",
+      "17": "Attachment",
+      "18": "Link (one-way)",
+      "20": "Formula",
+      "21": "DuplexLink (two-way)",
+      "22": "Location"
+    }
+  },
+  "examples": [
+    {
+      "title": "Create App and Table",
+      "description": "Basic workflow to create a new Bitable app with a task management table",
+      "tools": ["bitable_create_app", "bitable_create_table"],
+      "code": "// Create new Bitable app\nbitable_create_app({\n  name: \"Project Tracker\",\n  folder_token: \"\" // optional\n})\n\n// Create table with fields\nbitable_create_table({\n  app_token: \"bascnXXX...\",\n  table_name: \"Tasks\",\n  fields: [\n    { field_name: \"Task Name\", type: 1 },\n    { field_name: \"Status\", type: 3 },\n    { field_name: \"Due Date\", type: 5 }\n  ]\n})"
+    },
+    {
+      "title": "Search and Update Records",
+      "description": "Query records with filters and perform batch updates",
+      "tools": ["bitable_search_records", "bitable_batch_update_records"],
+      "code": "// Search records with filter\nbitable_search_records({\n  app_token: \"bascnXXX...\",\n  table_id: \"tblXXX...\",\n  filter: {\n    conjunction: \"and\",\n    conditions: [{\n      field_name: \"Status\",\n      operator: \"is\",\n      value: [\"In Progress\"]\n    }]\n  }\n})\n\n// Batch update matching records\nbitable_batch_update_records({\n  app_token: \"bascnXXX...\",\n  table_id: \"tblXXX...\",\n  records: [\n    { record_id: \"recXXX...\", fields: { \"Status\": \"Done\" }}\n  ]\n})"
+    }
+  ],
+  "comparison": {
+    "vs": "larksuite-mcp-wrapper",
+    "advantages": [
+      "15 focused tools vs 65+ mixed tools",
+      "Faster initialization and clearer purpose",
+      "Dedicated Bitable operations only",
+      "Works with Cloudflare Workers (HTTP Streamable)",
+      "Comprehensive n8n Cloud integration guide"
+    ]
+  },
+  "limitations": {
+    "sseTransport": "Not available on Cloudflare Workers due to platform limitations. Use HTTP Streamable transport instead.",
+    "authentication": "Requires MCP_AUTH_SECRET token from server administrator",
+    "rateLimits": "Subject to Lark API rate limits (handled by gateway)"
+  },
+  "healthCheck": {
+    "endpoint": "https://lark-bitable-mcp.hypelive.workers.dev/health",
+    "expectedResponse": {
+      "status": "healthy",
+      "server": "lark-bitable-mcp",
+      "version": "1.0.0",
+      "transports": ["sse", "streamable-http"],
+      "tools": 15,
+      "gateway": "https://larksuite-hype-server.hypelive.workers.dev",
+      "authentication": "enabled"
+    }
+  }
+}

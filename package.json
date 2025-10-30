@@ -1,0 +1,33 @@
+{
+  "name": "lark-bitable-mcp",
+  "version": "1.0.0",
+  "description": "Focused MCP server for Lark Bitable (Base) operations",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "node src/index.ts",
+    "dev:http": "MCP_TRANSPORT=sse PORT=3000 node src/index.ts",
+    "build": "tsc",
+    "start": "node src/index.ts",
+    "start:http": "MCP_TRANSPORT=sse PORT=3000 node src/index.ts",
+    "cf:dev": "wrangler dev src/worker.ts",
+    "cf:deploy": "wrangler deploy",
+    "cf:deploy:prod": "wrangler deploy --env production",
+    "cf:tail": "wrangler tail",
+    "cf:secret:set": "wrangler secret put",
+    "cf:typegen": "wrangler types"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250110.0",
+    "@types/node": "^22.10.5",
+    "typescript": "^5.7.2",
+    "wrangler": "^3.94.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

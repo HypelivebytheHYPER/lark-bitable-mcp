@@ -1,0 +1,31 @@
+name = "lark-bitable-mcp"
+main = "src/worker.ts"
+compatibility_date = "2025-01-30"
+compatibility_flags = ["nodejs_compat"]
+
+# Workers configuration
+[observability]
+enabled = true
+
+# Environment variables
+[vars]
+GATEWAY_URL = "https://larksuite-hype-server.hypelive.workers.dev"
+MCP_SERVER_NAME = "lark-bitable-mcp"
+MCP_SERVER_VERSION = "1.0.0"
+
+# Secrets (set via: wrangler secret put SECRET_NAME)
+# LARK_APP_ID = ""
+# LARK_APP_SECRET = ""
+# MCP_AUTH_SECRET = ""
+
+# Development settings
+[env.development]
+name = "lark-bitable-mcp-dev"
+vars = { GATEWAY_URL = "https://larksuite-hype-server.hypelive.workers.dev" }
+
+# Production settings
+[env.production]
+name = "lark-bitable-mcp"
+routes = [
+  { pattern = "lark-bitable-mcp.hypelive.workers.dev", custom_domain = false }
+]

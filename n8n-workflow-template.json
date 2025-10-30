@@ -1,0 +1,387 @@
+{
+  "name": "Lark Bitable MCP - Complete Test Suite",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual-trigger",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "app_token",
+              "name": "app_token",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "table_id",
+              "name": "table_id",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set-variables",
+      "name": "Set Variables",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "transport": "HTTP Streamable",
+        "url": "https://lark-bitable-mcp.hypelive.workers.dev/mcp",
+        "authentication": "bearerToken",
+        "bearerToken": "={{ $env.MCP_AUTH_SECRET }}",
+        "tool": "bitable_list_apps",
+        "arguments": "{}"
+      },
+      "id": "test-1-list-apps",
+      "name": "Test 1: List Apps",
+      "type": "n8n-nodes-base.mcpClientTool",
+      "typeVersion": 1,
+      "position": [680, 200]
+    },
+    {
+      "parameters": {
+        "transport": "HTTP Streamable",
+        "url": "https://lark-bitable-mcp.hypelive.workers.dev/mcp",
+        "authentication": "bearerToken",
+        "bearerToken": "={{ $env.MCP_AUTH_SECRET }}",
+        "tool": "bitable_create_app",
+        "arguments": "{\n  \"name\": \"Test App from n8n - {{ $now }}\",\n  \"folder_token\": \"\"\n}"
+      },
+      "id": "test-2-create-app",
+      "name": "Test 2: Create App",
+      "type": "n8n-nodes-base.mcpClientTool",
+      "typeVersion": 1,
+      "position": [680, 400]
+    },
+    {
+      "parameters": {
+        "transport": "HTTP Streamable",
+        "url": "https://lark-bitable-mcp.hypelive.workers.dev/mcp",
+        "authentication": "bearerToken",
+        "bearerToken": "={{ $env.MCP_AUTH_SECRET }}",
+        "tool": "bitable_get_app",
+        "arguments": "{\n  \"app_token\": \"{{ $json.app_token }}\"\n}"
+      },
+      "id": "test-3-get-app",
+      "name": "Test 3: Get App Details",
+      "type": "n8n-nodes-base.mcpClientTool",
+      "typeVersion": 1,
+      "position": [900, 400]
+    },
+    {
+      "parameters": {
+        "transport": "HTTP Streamable",
+        "url": "https://lark-bitable-mcp.hypelive.workers.dev/mcp",
+        "authentication": "bearerToken",
+        "bearerToken": "={{ $env.MCP_AUTH_SECRET }}",
+        "tool": "bitable_create_table",
+        "arguments": "{\n  \"app_token\": \"{{ $json.app_token }}\",\n  \"table_name\": \"Test Tasks\",\n  \"fields\": [\n    {\n      \"field_name\": \"Task Name\",\n      \"type\": 1\n    },\n    {\n      \"field_name\": \"Status\",\n      \"type\": 3,\n      \"property\": {\n        \"options\": [\n          {\"name\": \"To Do\"},\n          {\"name\": \"In Progress\"},\n          {\"name\": \"Done\"}\n        ]\n      }\n    },\n    {\n      \"field_name\": \"Priority\",\n      \"type\": 3,\n      \"property\": {\n        \"options\": [\n          {\"name\": \"Low\"},\n          {\"name\": \"Medium\"},\n          {\"name\": \"High\"}\n        ]\n      }\n    },\n    {\n      \"field_name\": \"Due Date\",\n      \"type\": 5\n    },\n    {\n      \"field_name\": \"Completed\",\n      \"type\": 7\n    }\n  ]\n}"
+      },
+      "id": "test-4-create-table",
+      "name": "Test 4: Create Table",
+      "type": "n8n-nodes-base.mcpClientTool",
+      "typeVersion": 1,
+      "position": [1120, 400]
+    },
+    {
+      "parameters": {
+        "transport": "HTTP Streamable",
+        "url": "https://lark-bitable-mcp.hypelive.workers.dev/mcp",
+        "authentication": "bearerToken",
+        "bearerToken": "={{ $env.MCP_AUTH_SECRET }}",
+        "tool": "bitable_list_tables",
+        "arguments": "{\n  \"app_token\": \"{{ $node['Test 2: Create App'].json.app_token }}\"\n}"
+      },
+      "id": "test-5-list-tables",
+      "name": "Test 5: List Tables",
+      "type": "n8n-nodes-base.mcpClientTool",
+      "typeVersion": 1,
+      "position": [1340, 400]
+    },
+    {
+      "parameters": {
+        "transport": "HTTP Streamable",
+        "url": "https://lark-bitable-mcp.hypelive.workers.dev/mcp",
+        "authentication": "bearerToken",
+        "bearerToken": "={{ $env.MCP_AUTH_SECRET }}",
+        "tool": "bitable_list_fields",
+        "arguments": "{\n  \"app_token\": \"{{ $node['Test 2: Create App'].json.app_token }}\",\n  \"table_id\": \"{{ $node['Test 4: Create Table'].json.table_id }}\"\n}"
+      },
+      "id": "test-6-list-fields",
+      "name": "Test 6: List Fields",
+      "type": "n8n-nodes-base.mcpClientTool",
+      "typeVersion": 1,
+      "position": [1560, 400]
+    },
+    {
+      "parameters": {
+        "transport": "HTTP Streamable",
+        "url": "https://lark-bitable-mcp.hypelive.workers.dev/mcp",
+        "authentication": "bearerToken",
+        "bearerToken": "={{ $env.MCP_AUTH_SECRET }}",
+        "tool": "bitable_create_record",
+        "arguments": "{\n  \"app_token\": \"{{ $node['Test 2: Create App'].json.app_token }}\",\n  \"table_id\": \"{{ $node['Test 4: Create Table'].json.table_id }}\",\n  \"fields\": {\n    \"Task Name\": \"Test task 1\",\n    \"Status\": \"To Do\",\n    \"Priority\": \"High\",\n    \"Completed\": false\n  }\n}"
+      },
+      "id": "test-7-create-record",
+      "name": "Test 7: Create Single Record",
+      "type": "n8n-nodes-base.mcpClientTool",
+      "typeVersion": 1,
+      "position": [1780, 300]
+    },
+    {
+      "parameters": {
+        "transport": "HTTP Streamable",
+        "url": "https://lark-bitable-mcp.hypelive.workers.dev/mcp",
+        "authentication": "bearerToken",
+        "bearerToken": "={{ $env.MCP_AUTH_SECRET }}",
+        "tool": "bitable_batch_create_records",
+        "arguments": "{\n  \"app_token\": \"{{ $node['Test 2: Create App'].json.app_token }}\",\n  \"table_id\": \"{{ $node['Test 4: Create Table'].json.table_id }}\",\n  \"records\": [\n    {\n      \"fields\": {\n        \"Task Name\": \"Test task 2\",\n        \"Status\": \"In Progress\",\n        \"Priority\": \"Medium\",\n        \"Completed\": false\n      }\n    },\n    {\n      \"fields\": {\n        \"Task Name\": \"Test task 3\",\n        \"Status\": \"Done\",\n        \"Priority\": \"Low\",\n        \"Completed\": true\n      }\n    },\n    {\n      \"fields\": {\n        \"Task Name\": \"Test task 4\",\n        \"Status\": \"To Do\",\n        \"Priority\": \"High\",\n        \"Completed\": false\n      }\n    }\n  ]\n}"
+      },
+      "id": "test-8-batch-create",
+      "name": "Test 8: Batch Create Records",
+      "type": "n8n-nodes-base.mcpClientTool",
+      "typeVersion": 1,
+      "position": [1780, 500]
+    },
+    {
+      "parameters": {
+        "transport": "HTTP Streamable",
+        "url": "https://lark-bitable-mcp.hypelive.workers.dev/mcp",
+        "authentication": "bearerToken",
+        "bearerToken": "={{ $env.MCP_AUTH_SECRET }}",
+        "tool": "bitable_search_records",
+        "arguments": "{\n  \"app_token\": \"{{ $node['Test 2: Create App'].json.app_token }}\",\n  \"table_id\": \"{{ $node['Test 4: Create Table'].json.table_id }}\",\n  \"filter\": {\n    \"conjunction\": \"and\",\n    \"conditions\": [\n      {\n        \"field_name\": \"Status\",\n        \"operator\": \"is\",\n        \"value\": [\"To Do\"]\n      }\n    ]\n  },\n  \"page_size\": 100\n}"
+      },
+      "id": "test-9-search-records",
+      "name": "Test 9: Search Records",
+      "type": "n8n-nodes-base.mcpClientTool",
+      "typeVersion": 1,
+      "position": [2000, 400]
+    },
+    {
+      "parameters": {
+        "transport": "HTTP Streamable",
+        "url": "https://lark-bitable-mcp.hypelive.workers.dev/mcp",
+        "authentication": "bearerToken",
+        "bearerToken": "={{ $env.MCP_AUTH_SECRET }}",
+        "tool": "bitable_update_record",
+        "arguments": "{\n  \"app_token\": \"{{ $node['Test 2: Create App'].json.app_token }}\",\n  \"table_id\": \"{{ $node['Test 4: Create Table'].json.table_id }}\",\n  \"record_id\": \"{{ $node['Test 7: Create Single Record'].json.record.record_id }}\",\n  \"fields\": {\n    \"Status\": \"In Progress\"\n  }\n}"
+      },
+      "id": "test-10-update-record",
+      "name": "Test 10: Update Single Record",
+      "type": "n8n-nodes-base.mcpClientTool",
+      "typeVersion": 1,
+      "position": [2220, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract record IDs from search results\nconst records = $input.item.json.items || [];\nconst updateRecords = records.map(record => ({\n  record_id: record.record_id,\n  fields: {\n    Status: \"Done\",\n    Completed: true\n  }\n}));\n\nreturn {\n  json: {\n    app_token: $node['Test 2: Create App'].json.app_token,\n    table_id: $node['Test 4: Create Table'].json.table_id,\n    records: updateRecords\n  }\n};"
+      },
+      "id": "prepare-batch-update",
+      "name": "Prepare Batch Update",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2220, 500]
+    },
+    {
+      "parameters": {
+        "transport": "HTTP Streamable",
+        "url": "https://lark-bitable-mcp.hypelive.workers.dev/mcp",
+        "authentication": "bearerToken",
+        "bearerToken": "={{ $env.MCP_AUTH_SECRET }}",
+        "tool": "bitable_batch_update_records",
+        "arguments": "={{ JSON.stringify($json) }}"
+      },
+      "id": "test-11-batch-update",
+      "name": "Test 11: Batch Update Records",
+      "type": "n8n-nodes-base.mcpClientTool",
+      "typeVersion": 1,
+      "position": [2440, 500]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Summary of all tests\nconst results = {\n  test_suite: \"Lark Bitable MCP - Complete Test\",\n  timestamp: new Date().toISOString(),\n  tests_passed: [],\n  tests_failed: [],\n  created_resources: {\n    app_token: $node['Test 2: Create App'].json.app_token,\n    app_name: $node['Test 2: Create App'].json.name,\n    table_id: $node['Test 4: Create Table'].json.table_id,\n    table_name: $node['Test 4: Create Table'].json.name,\n    records_created: 4,\n    records_updated: $node['Test 11: Batch Update Records'].json?.records?.length || 0\n  },\n  next_steps: [\n    \"Review created app in Lark Bitable\",\n    \"Verify all records have correct data\",\n    \"Test additional field types\",\n    \"Build production workflows\",\n    \"Apply to MCP Protocol Foundation\"\n  ]\n};\n\n// Check each test result\nconst tests = [\n  'Test 1: List Apps',\n  'Test 2: Create App',\n  'Test 3: Get App Details',\n  'Test 4: Create Table',\n  'Test 5: List Tables',\n  'Test 6: List Fields',\n  'Test 7: Create Single Record',\n  'Test 8: Batch Create Records',\n  'Test 9: Search Records',\n  'Test 10: Update Single Record',\n  'Test 11: Batch Update Records'\n];\n\ntests.forEach(testName => {\n  try {\n    const node = $node[testName];\n    if (node && node.json) {\n      results.tests_passed.push(testName);\n    } else {\n      results.tests_failed.push(testName);\n    }\n  } catch (error) {\n    results.tests_failed.push(`${testName}: ${error.message}`);\n  }\n});\n\nresults.summary = `✅ ${results.tests_passed.length} tests passed, ❌ ${results.tests_failed.length} tests failed`;\n\nreturn { json: results };"
+      },
+      "id": "test-summary",
+      "name": "Test Summary",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2660, 400]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set Variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Variables": {
+      "main": [
+        [
+          {
+            "node": "Test 1: List Apps",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Test 2: Create App",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Test 2: Create App": {
+      "main": [
+        [
+          {
+            "node": "Test 3: Get App Details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Test 3: Get App Details": {
+      "main": [
+        [
+          {
+            "node": "Test 4: Create Table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Test 4: Create Table": {
+      "main": [
+        [
+          {
+            "node": "Test 5: List Tables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Test 5: List Tables": {
+      "main": [
+        [
+          {
+            "node": "Test 6: List Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Test 6: List Fields": {
+      "main": [
+        [
+          {
+            "node": "Test 7: Create Single Record",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Test 8: Batch Create Records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Test 7: Create Single Record": {
+      "main": [
+        [
+          {
+            "node": "Test 10: Update Single Record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Test 8: Batch Create Records": {
+      "main": [
+        [
+          {
+            "node": "Test 9: Search Records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Test 9: Search Records": {
+      "main": [
+        [
+          {
+            "node": "Prepare Batch Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Test 10: Update Single Record": {
+      "main": [
+        [
+          {
+            "node": "Test Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Batch Update": {
+      "main": [
+        [
+          {
+            "node": "Test 11: Batch Update Records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Test 11: Batch Update Records": {
+      "main": [
+        [
+          {
+            "node": "Test Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-01-31T00:00:00.000Z",
+  "versionId": "1"
+}
