@@ -31,7 +31,60 @@ Focused MCP server providing **only** Lark Bitable (Base) operations through Cla
 
 ## 🚀 Quick Start
 
-### Installation
+### Manual Installation (Claude Code)
+
+**For Claude Code users who want to use this MCP server before it's published to the registry:**
+
+1. **Open your Claude Code MCP configuration file:**
+   ```bash
+   # On macOS/Linux
+   open ~/Library/Application\ Support/Claude/claude_desktop_config.json
+
+   # Or edit directly
+   nano ~/Library/Application\ Support/Claude/claude_desktop_config.json
+   ```
+
+2. **Add the server configuration:**
+   ```json
+   {
+     "mcpServers": {
+       "lark-bitable": {
+         "url": "https://lark-bitable-mcp.hypelive.workers.dev/mcp",
+         "transport": {
+           "type": "http"
+         },
+         "headers": {
+           "Authorization": "Bearer YOUR_AUTH_TOKEN_HERE"
+         }
+       }
+     }
+   }
+   ```
+
+3. **Get your authentication token:**
+   Contact the server administrator for the `MCP_AUTH_SECRET` token.
+
+4. **Restart Claude Code** to load the new configuration.
+
+5. **Verify installation:**
+   ```bash
+   # In Claude Code, ask:
+   "List available MCP tools"
+
+   # You should see 15 Bitable tools available
+   ```
+
+**Alternative: Using MCP Inspector for testing:**
+```bash
+# Install MCP Inspector
+npm install -g @modelcontextprotocol/inspector
+
+# Test the server
+mcp-inspector https://lark-bitable-mcp.hypelive.workers.dev/mcp \
+  --header "Authorization: Bearer YOUR_AUTH_TOKEN_HERE"
+```
+
+### Installation (Self-Hosting)
 
 ```bash
 cd INFRASTRUCTURE/cloudflare/cloudflare-workers/production/lark-bitable-mcp
