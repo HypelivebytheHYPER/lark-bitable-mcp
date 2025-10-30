@@ -1,6 +1,6 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-10-17/server.schema.json",
-  "name": "dev.workers.hypelive/lark-bitable-mcp",
+  "name": "io.github.HypelivebytheHYPER/lark-bitable-mcp",
   "title": "Lark Bitable MCP Server",
   "description": "MCP server for Lark Bitable with 15 essential database operations. Manage apps, tables, and records.",
   "version": "1.0.0",
